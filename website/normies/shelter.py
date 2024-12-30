@@ -28,7 +28,7 @@ def shelter():
         latitude = request.form['latitude']
         longitude = request.form['longitude']
 
-        genai.configure(api_key="A")
+        genai.configure(api_key="")
         model = genai.GenerativeModel("gemini-1.5-flash")
         response = model.generate_content("Where is this latitude {} and longitude {}".format(latitude, longitude))
        
