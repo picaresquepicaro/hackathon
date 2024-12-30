@@ -1,0 +1,70 @@
+#!/bin/env python3
+
+import socket
+import xml.etree.ElementTree as ET
+import re
+
+# Create a UDP socket
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+# Bind the socket to a specific address and port
+server_address = ('10.99.41.255', 4242)  # Replace with your desired address and port
+sock.bind(server_address)
+
+print("Waiting for XML data...")
+
+
+while True:
+    data, address = sock.recvfrom(4096)  # Adjust buffer size as needed
+
+    try:
+        root = ET.fromstring(data.decode())  # Parse the XML data
+        xml_type = None
+        event_pattern = "'uid': 'UID-\d{5}'"
+        # Process the XML elements
+        for element in root.iter():
+            #print(element.tag, element.attrib, element.text)
+            xml_type = element.tag
+            match xml_type:
+                case "event":
+                    print("event tag reached need time")
+                    print(element.attrib)
+                    event_match = re.search(event_pattern, element.attrib)
+                    print(event_match.group())
+                case "point":
+                    print("point tag reached need lat long")
+                    print(element.attrib)
+                case "detail":
+                    print("detail tag reached need text")
+                    print(element.text)
+                case _:
+                    print("wtf!")
+
+    except ET.ParseError as e:
+        print("Error parsing XML:", e)
+
+"""
+def main():
+    # Create a UDP socket
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+    # Bind the socket to a specific address and port
+    server_address = ('0.0.0.0', 10000)
+    sock.bind(server_address)
+
+    print("UDP server listening on {}:{}".format(*server_address))
+
+    while True:
+        # Receive data from a client
+        data, client_address = sock.recvfrom(4242)
+
+        print("Received {} bytes from {}".format(len(data), client_address))
+        print("Data:", data.decode())
+
+        # Send a response to the client
+        message = "Hello from the server!"
+        sock.sendto(message.encode(), client_address)
+
+if __name__ == "__main__":
+    main()
+"""

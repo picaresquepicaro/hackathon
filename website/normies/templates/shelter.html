@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}This is about Shelters{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+    <label for="latitude">Latitude:</label>
+    <input name="latitude" id="latitude" placeholder="Enter your latitudinal" required>
+    <label for="longitude">Longitude</label>
+    <input name="longitude" id="longitude" placeholder="Enter your longitudinal" required>
+    <input type="submit" value="Distances">
+  </form>
+
+  <article class="post">
+          {% if response %}
+          <header>
+            <div class=about">
+              <h1>This is what Gemini says ...</h1>
+              <textarea class="body" id="whereami" name="whereami" rows="5" cols="100">{{ response.text }}</textarea>
+            </div>
+          </header>
+          <br><br>
+          {% for shelter in shelters %}
+            <div>
+                  <label for="shelter">Shelter</label>
+                  <input type="text" id="shelter" name="shelter" value="{{ shelter['shelter_name'] }}">
+                  <label for="beds">Beds</label>
+                  <input type="text" id="beds" name="beds" size="10" value="{{ shelter['occupancy'] }}">
+                  <label for="status">Status</label>
+                  <input type="text" id="status" name="status" value="{{ shelter['status'] }}">
+                  <label for="distance">Distance</label>
+                  <input type="text" id="distance" name="distance" size="10" value="{{ shelter['distance'] }}">
+            </div>
+          {% endfor %}
+          {% endif %}
+  </article>
+{% endblock %}
